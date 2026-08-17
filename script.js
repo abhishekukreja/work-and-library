@@ -108,14 +108,36 @@
     }
   };
 
+  const hasDeskData = (desk) =>
+    Boolean(desk && (desk.updatedAt || desk.items.length || desk.categoryOrder.length));
+
   const newestDesk = (...candidates) =>
     candidates
       .map(parseDesk)
-      .filter(Boolean)
+      .filter(hasDeskData)
       .sort((a, b) => b.updatedAt - a.updatedAt)[0] || null;
 
   const fetchGistDesk = async () => {
+    try {
+      const res = await fetch(`https://api.github.com/gists/${GIST_ID}?t=${Date.now()}`, {
+        cache: "no-store",
+        headers: { Accept: "application/vnd.github+json" },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const desk = parseDesk(JSON.parse(data.files?.["desk.json"]?.content || "null"));
+        if (hasDeskData(desk)) return desk;
+      }
+    } catch {
+      /* try raw next */
+    }
     const res = await fetch(`${GIST_RAW}?t=${Date.now()}`, { cache: "no-store" });
+    if (!res.ok) return null;
+    return parseDesk(await res.json());
+  };
+
+  const fetchPagesDesk = async () => {
+    const res = await fetch(`desk.json?t=${Date.now()}`, { cache: "no-store" });
     if (!res.ok) return null;
     return parseDesk(await res.json());
   };
@@ -164,12 +186,13 @@
 
   const pullDesk = async () => {
     const local = localDesk();
-    let remote = null;
-    try {
-      remote = newestDesk(await fetchGistDesk(), await fetchNtfyDesk());
-    } catch {
-      remote = null;
-    }
+    const remote = newestDesk(
+      ...(await Promise.all([
+        fetchGistDesk().catch(() => null),
+        fetchNtfyDesk().catch(() => null),
+        fetchPagesDesk().catch(() => null),
+      ]))
+    );
 
     const hasLocal = Boolean(local.items.length || local.categoryOrder.length);
     if (!remote) {

@@ -1,19 +1,223 @@
 (() => {
   const STORAGE_KEY = "ak-work-items";
+  const CATEGORIES_KEY = "ak-work-categories";
+  const CATEGORY_ORDER_KEY = "ak-work-category-order";
+  const UPDATED_AT_KEY = "ak-work-updated-at";
   const URGENCY_ORDER = { Urgent: 0, Pending: 1, Pipeline: 2 };
+  const GIST_ID = "68a30415ea2c24f7bb8c0dc13fd4f7e5";
+  const NTFY_TOPIC = "ak-desk-abhishekukreja-9f2c4b71e8a04d6c";
+  const NTFY_URL = `https://ntfy.sh/${NTFY_TOPIC}`;
+  const GIST_RAW = `https://gist.githubusercontent.com/abhishekukreja/${GIST_ID}/raw/desk.json`;
+
+  const deskListeners = [];
+  const subscribeDesk = (fn) => {
+    deskListeners.push(fn);
+  };
+  const emitDesk = () => {
+    deskListeners.forEach((fn) => {
+      try {
+        fn();
+      } catch {
+        /* page section not ready */
+      }
+    });
+  };
+
+  let applyingRemote = false;
+  let pushTimer = 0;
+  let lastPushedAt = 0;
+
+  const readJson = (raw, fallback) => {
+    try {
+      const parsed = raw ? JSON.parse(raw) : fallback;
+      return parsed;
+    } catch {
+      return fallback;
+    }
+  };
 
   const loadItems = () => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      const parsed = raw ? JSON.parse(raw) : [];
-      return Array.isArray(parsed) ? parsed : [];
-    } catch {
-      return [];
-    }
+    const parsed = readJson(localStorage.getItem(STORAGE_KEY), []);
+    return Array.isArray(parsed) ? parsed : [];
+  };
+
+  const loadCustomCategories = () => {
+    const parsed = readJson(localStorage.getItem(CATEGORIES_KEY), []);
+    return Array.isArray(parsed) ? parsed.filter((name) => String(name).trim()) : [];
+  };
+
+  const loadCategoryOrder = () => {
+    const parsed = readJson(localStorage.getItem(CATEGORY_ORDER_KEY), null);
+    return Array.isArray(parsed) ? parsed.filter((name) => String(name).trim()) : null;
+  };
+
+  const loadUpdatedAt = () => Number(localStorage.getItem(UPDATED_AT_KEY)) || 0;
+
+  const parseDesk = (value) => {
+    if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+    if (!Array.isArray(value.items)) return null;
+    return {
+      items: value.items,
+      categoryOrder: Array.isArray(value.categoryOrder) ? value.categoryOrder : [],
+      updatedAt: Number(value.updatedAt) || 0,
+    };
+  };
+
+  const localDesk = () => ({
+    items: loadItems(),
+    categoryOrder: loadCategoryOrder() || [],
+    updatedAt: loadUpdatedAt(),
+  });
+
+  const applyDesk = (desk) => {
+    const next = parseDesk(desk);
+    if (!next) return;
+    applyingRemote = true;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(next.items));
+    localStorage.setItem(CATEGORY_ORDER_KEY, JSON.stringify(next.categoryOrder));
+    localStorage.setItem(UPDATED_AT_KEY, String(next.updatedAt));
+    applyingRemote = false;
+    emitDesk();
+  };
+
+  const touchDesk = () => {
+    if (applyingRemote) return;
+    localStorage.setItem(UPDATED_AT_KEY, String(Date.now()));
+    window.clearTimeout(pushTimer);
+    pushTimer = window.setTimeout(pushDesk, 350);
   };
 
   const saveItems = (items) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    touchDesk();
+  };
+
+  const saveCategoryOrder = (categories) => {
+    localStorage.setItem(CATEGORY_ORDER_KEY, JSON.stringify(categories));
+    touchDesk();
+  };
+
+  const parseNtfyPayload = (raw) => {
+    if (!raw) return null;
+    try {
+      const row = JSON.parse(raw);
+      const message = typeof row.message === "string" ? row.message : raw;
+      return parseDesk(JSON.parse(message));
+    } catch {
+      return parseDesk(readJson(raw, null));
+    }
+  };
+
+  const newestDesk = (...candidates) =>
+    candidates
+      .map(parseDesk)
+      .filter(Boolean)
+      .sort((a, b) => b.updatedAt - a.updatedAt)[0] || null;
+
+  const fetchGistDesk = async () => {
+    const res = await fetch(`${GIST_RAW}?t=${Date.now()}`, { cache: "no-store" });
+    if (!res.ok) return null;
+    return parseDesk(await res.json());
+  };
+
+  const fetchNtfyDesk = async () => {
+    const res = await fetch(`${NTFY_URL}/json?poll=1&since=all`, { cache: "no-store" });
+    if (!res.ok) return null;
+    const text = await res.text();
+    let latest = null;
+    text.split("\n").forEach((line) => {
+      const desk = parseNtfyPayload(line);
+      if (!desk) return;
+      if (!latest || desk.updatedAt >= latest.updatedAt) latest = desk;
+    });
+    return latest;
+  };
+
+  const pushDesk = async () => {
+    const desk = localDesk();
+    if (!desk.updatedAt || desk.updatedAt === lastPushedAt) return;
+    lastPushedAt = desk.updatedAt;
+    const body = JSON.stringify(desk);
+    try {
+      await fetch(NTFY_URL, {
+        method: "POST",
+        headers: { Title: "desk", Priority: "min" },
+        body,
+      });
+    } catch {
+      lastPushedAt = 0;
+    }
+  };
+
+  const mergeDesk = (a, b) => {
+    const byId = new Map();
+    [...(a?.items || []), ...(b?.items || [])].forEach((item) => {
+      if (item?.id) byId.set(item.id, item);
+    });
+    const order = a?.categoryOrder?.length ? a.categoryOrder : b?.categoryOrder || [];
+    return {
+      items: [...byId.values()],
+      categoryOrder: order,
+      updatedAt: Date.now(),
+    };
+  };
+
+  const pullDesk = async () => {
+    const local = localDesk();
+    let remote = null;
+    try {
+      remote = newestDesk(await fetchGistDesk(), await fetchNtfyDesk());
+    } catch {
+      remote = null;
+    }
+
+    const hasLocal = Boolean(local.items.length || local.categoryOrder.length);
+    if (!remote) {
+      if (hasLocal) {
+        if (!local.updatedAt) localStorage.setItem(UPDATED_AT_KEY, String(Date.now()));
+        await pushDesk();
+      }
+      return;
+    }
+
+    if (!local.updatedAt && hasLocal) {
+      const merged = mergeDesk(local, remote);
+      lastPushedAt = 0;
+      applyDesk(merged);
+      await pushDesk();
+      return;
+    }
+
+    if (local.updatedAt > remote.updatedAt) {
+      await pushDesk();
+      return;
+    }
+
+    if (remote.updatedAt > local.updatedAt) {
+      lastPushedAt = remote.updatedAt;
+      applyDesk(remote);
+    }
+  };
+
+  const startDeskSync = () => {
+    pullDesk();
+    window.setInterval(pullDesk, 8000);
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") pullDesk();
+    });
+    window.addEventListener("focus", pullDesk);
+
+    try {
+      const stream = new EventSource(`${NTFY_URL}/sse`);
+      stream.addEventListener("message", (event) => {
+        const desk = parseNtfyPayload(event.data);
+        if (!desk || desk.updatedAt <= loadUpdatedAt()) return;
+        lastPushedAt = desk.updatedAt;
+        applyDesk(desk);
+      });
+    } catch {
+      /* polling still runs */
+    }
   };
 
   const patchItem = (id, patch) => {
@@ -517,7 +721,9 @@
   };
 
   renderHomeLists();
+  subscribeDesk(renderHomeLists);
   enableScrollHints(document.querySelector(".home-todo"));
+  startDeskSync();
 
   /* ——— Work page ——— */
 
@@ -532,9 +738,6 @@
     "Style Me App",
     "Rajan’s Reading and Writing",
   ];
-  const CATEGORIES_KEY = "ak-work-categories";
-  const CATEGORY_ORDER_KEY = "ak-work-category-order";
-
   const grid = document.getElementById("work-grid");
   const workDialog = document.getElementById("work-dialog");
   const form = document.getElementById("work-form");
@@ -549,30 +752,6 @@
   if (!grid || !workDialog || !form || !plusButton) return;
 
   let activeCategory = "";
-
-  const loadCustomCategories = () => {
-    try {
-      const raw = localStorage.getItem(CATEGORIES_KEY);
-      const parsed = raw ? JSON.parse(raw) : [];
-      return Array.isArray(parsed) ? parsed.filter((name) => String(name).trim()) : [];
-    } catch {
-      return [];
-    }
-  };
-
-  const loadCategoryOrder = () => {
-    try {
-      const raw = localStorage.getItem(CATEGORY_ORDER_KEY);
-      const parsed = raw ? JSON.parse(raw) : null;
-      return Array.isArray(parsed) ? parsed.filter((name) => String(name).trim()) : null;
-    } catch {
-      return null;
-    }
-  };
-
-  const saveCategoryOrder = (categories) => {
-    localStorage.setItem(CATEGORY_ORDER_KEY, JSON.stringify(categories));
-  };
 
   const getAllCategories = () => {
     const savedOrder = loadCategoryOrder();
@@ -972,4 +1151,9 @@
   });
 
   renderCategoryGrid();
+  subscribeDesk(() => {
+    renderCategoryGrid();
+    if (activeCategory) renderCategoryWorks(activeCategory);
+  });
+  pullDesk();
 })();

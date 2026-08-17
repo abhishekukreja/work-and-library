@@ -298,11 +298,24 @@ img {
   align-items: center;
   padding-bottom: 0.35rem;
   border-bottom: 1px solid rgba(246, 239, 232, 0.12);
+  cursor: pointer;
 }
 
 .home-todo__item:last-child {
   border-bottom: 0;
   padding-bottom: 0;
+}
+
+.home-todo__item.is-editing {
+  display: block;
+  cursor: default;
+  padding-bottom: 0.55rem;
+}
+
+.home-todo__item.is-editing .work-row--edit {
+  grid-template-columns: 1fr;
+  gap: 0.35rem;
+  padding: 0.5rem;
 }
 
 .home-todo__item.is-done .home-todo__name,
@@ -1272,6 +1285,10 @@ img {
 
   .home-todo__item {
     grid-template-columns: auto 1fr;
+  }
+
+  .home-todo__item.is-editing {
+    display: block;
   }
 
   .home-todo__item .task-actions {

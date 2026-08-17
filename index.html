@@ -49,6 +49,24 @@
     </a>
   </main>
 
+  <datalist id="home-work-categories"></datalist>
+
+  <div class="date-calendar" id="date-calendar" hidden>
+    <div class="date-calendar__head">
+      <button type="button" class="date-calendar__nav" data-cal-prev aria-label="Previous month">‹</button>
+      <p class="date-calendar__label" id="date-calendar-label"></p>
+      <button type="button" class="date-calendar__nav" data-cal-next aria-label="Next month">›</button>
+    </div>
+    <div class="date-calendar__weekdays" aria-hidden="true">
+      <span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span>
+    </div>
+    <div class="date-calendar__grid" id="date-calendar-grid"></div>
+    <div class="date-calendar__foot">
+      <button type="button" data-cal-today>Today</button>
+      <button type="button" data-cal-clear>Clear</button>
+    </div>
+  </div>
+
   <script src="script.js"></script>
 </body>
 </html>

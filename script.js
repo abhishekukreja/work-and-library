@@ -599,7 +599,7 @@
     return row;
   };
 
-  const makeEditableRow = (item, category, onChange) => {
+  const makeEditableRow = (item, category, onChange, { showCategory = false } = {}) => {
     const row = document.createElement("div");
     const urgency = item?.urgency || "Pending";
     const isNew = !item?.id;
@@ -608,6 +608,11 @@
 
     row.innerHTML = `
       <input class="work-row__title" type="text" name="name" placeholder="Work title" value="${escapeHtml(item?.name || "")}" />
+      ${
+        showCategory
+          ? `<input class="work-row__cat" type="text" name="category" list="home-work-categories" placeholder="Category" value="${escapeHtml(item?.category || category || "")}" autocomplete="off" />`
+          : ""
+      }
       <select class="work-row__status" name="urgency" aria-label="How soon">
         <option value="Urgent"${urgency === "Urgent" ? " selected" : ""}>Urgent</option>
         <option value="Pending"${urgency === "Pending" ? " selected" : ""}>Pending</option>
@@ -624,7 +629,8 @@
       urgency: row.querySelector('[name="urgency"]').value,
       due: getDateControlValue(row.querySelector('[name="due"]')),
       remark: row.querySelector('[name="remark"]').value.trim(),
-      category,
+      category:
+        row.querySelector('[name="category"]')?.value.trim() || category,
     });
 
     const syncTone = () => {
@@ -703,13 +709,65 @@
   const todoList = document.getElementById("home-todo-list");
   const urgentEmpty = document.getElementById("home-urgent-empty");
   const todoEmpty = document.getElementById("home-todo-empty");
+  const homeCategoryList = document.getElementById("home-work-categories");
+  let homeEditingId = null;
+
+  const syncHomeCategoryList = () => {
+    if (!homeCategoryList) return;
+    const seen = new Set();
+    const names = [];
+    [...(loadCategoryOrder() || []), ...loadItems().map((item) => item.category)].forEach(
+      (name) => {
+        const label = String(name || "").trim();
+        const key = normalize(label);
+        if (!key || seen.has(key)) return;
+        seen.add(key);
+        names.push(label);
+      }
+    );
+    homeCategoryList.replaceChildren(
+      ...names.map((name) => {
+        const option = document.createElement("option");
+        option.value = name;
+        return option;
+      })
+    );
+  };
 
   const renderHomeLists = () => {
     if (!urgentList || !todoList) return;
+    syncHomeCategoryList();
 
     const renderHomeListItem = (item) => {
       const li = document.createElement("li");
-      li.className = `home-todo__item${item.done ? " is-done" : ""}`;
+      const editing = homeEditingId === item.id;
+      li.className = `home-todo__item${item.done ? " is-done" : ""}${editing ? " is-editing" : ""}`;
+
+      if (editing) {
+        const editor = makeEditableRow(
+          item,
+          item.category,
+          (values, id) => {
+            if (!id) return;
+            const itemsNow = loadItems();
+            const index = itemsNow.findIndex((entry) => entry.id === id);
+            if (index < 0) return;
+            itemsNow[index] = { ...itemsNow[index], ...values };
+            saveItems(itemsNow);
+          },
+          { showCategory: true }
+        );
+        editor.addEventListener("keydown", (event) => {
+          if (event.key === "Escape") {
+            event.preventDefault();
+            homeEditingId = null;
+            renderHomeLists();
+          }
+        });
+        li.append(editor);
+        return li;
+      }
+
       li.innerHTML = `
         <span class="work-check" aria-hidden="true"></span>
         <span class="home-todo__name">${escapeHtml(item.name)}</span>
@@ -722,11 +780,17 @@
             renderHomeLists();
           },
           onRemove: () => {
+            if (homeEditingId === item.id) homeEditingId = null;
             deleteItem(item.id);
             renderHomeLists();
           },
         })
       );
+      li.addEventListener("click", (event) => {
+        if (event.target.closest(".task-actions")) return;
+        homeEditingId = item.id;
+        renderHomeLists();
+      });
       return li;
     };
 
@@ -743,8 +807,19 @@
     if (todoEmpty) todoEmpty.hidden = todoItems.length > 0;
   };
 
+  document.addEventListener("pointerdown", (event) => {
+    if (!homeEditingId || !urgentList) return;
+    if (event.target.closest(".home-todo__item")) return;
+    if (event.target.closest(".date-calendar")) return;
+    homeEditingId = null;
+    renderHomeLists();
+  });
+
   renderHomeLists();
-  subscribeDesk(renderHomeLists);
+  subscribeDesk(() => {
+    if (homeEditingId) return;
+    renderHomeLists();
+  });
   enableScrollHints(document.querySelector(".home-todo"));
   startDeskSync();
 

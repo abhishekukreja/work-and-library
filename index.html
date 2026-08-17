@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Abhishek Kukreja — Work & Library</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="page-home">
+  <div class="home-brand">
+    <p class="home-brand__name">Abhishek Kukreja</p>
+    <p class="home-brand__line">Choose a side of the desk.</p>
+  </div>
+
+  <main class="home-split" aria-label="Choose Work or Library">
+    <a class="home-panel home-panel--work" href="work.html">
+      <div class="home-panel__veil"></div>
+      <div class="home-panel__content">
+        <span class="home-panel__label">Enter</span>
+        <h1 class="home-panel__title">Work</h1>
+        <p class="home-panel__copy">Commitments, channels, and projects in motion.</p>
+      </div>
+    </a>
+
+    <aside class="home-todo" aria-label="Work lists">
+      <section class="home-list-block" aria-labelledby="urgent-heading">
+        <h2 id="urgent-heading">Urgent</h2>
+        <ul class="home-todo__list" id="home-urgent-list"></ul>
+        <p class="home-list-empty" id="home-urgent-empty">No urgent work yet.</p>
+      </section>
+
+      <section class="home-list-block home-list-block--todo" aria-labelledby="todo-heading">
+        <h2 id="todo-heading">Things TO DO</h2>
+        <ul class="home-todo__list" id="home-todo-list"></ul>
+        <p class="home-list-empty" id="home-todo-empty">No pending or pipeline work yet.</p>
+      </section>
+    </aside>
+
+    <a class="home-panel home-panel--library" href="library.html">
+      <div class="home-panel__veil"></div>
+      <div class="home-panel__content">
+        <span class="home-panel__label">Enter</span>
+        <h1 class="home-panel__title">Library</h1>
+        <p class="home-panel__copy">Reading, archives, and collected thought.</p>
+      </div>
+    </a>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

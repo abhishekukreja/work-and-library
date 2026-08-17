@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Work — Abhishek Kukreja</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="page-work">
+  <header class="site-header">
+    <a class="site-header__home" href="index.html">Abhishek Kukreja</a>
+    <nav class="site-header__nav" aria-label="Primary">
+      <a class="is-active" href="work.html">Work</a>
+      <a href="library.html">Library</a>
+    </nav>
+  </header>
+
+  <main class="work-main">
+    <section class="work-hero">
+      <p class="eyebrow">Desk · Commitments</p>
+      <h1>Work</h1>
+    </section>
+
+    <section class="work-grid" id="work-grid" aria-label="Work categories"></section>
+  </main>
+
+  <button class="work-plus" type="button" data-open-work-form aria-label="Add work">
+    <span aria-hidden="true">+</span>
+  </button>
+
+  <dialog class="work-dialog" id="work-dialog" aria-labelledby="work-dialog-title">
+    <form class="work-form" id="work-form">
+      <h2 id="work-dialog-title">Add work</h2>
+
+      <label>
+        Work name
+        <input type="text" name="name" required autocomplete="off" />
+      </label>
+
+      <label>
+        Category
+        <input type="text" name="category" list="work-categories" required autocomplete="off" />
+      </label>
+      <datalist id="work-categories"></datalist>
+
+      <fieldset>
+        <legend>How soon</legend>
+        <label class="work-form__choice">
+          <input type="radio" name="urgency" value="Urgent" required />
+          Urgent
+        </label>
+        <label class="work-form__choice">
+          <input type="radio" name="urgency" value="Pending" />
+          Pending
+        </label>
+        <label class="work-form__choice">
+          <input type="radio" name="urgency" value="Pipeline" />
+          Pipeline
+        </label>
+      </fieldset>
+
+      <label class="date-field-label">
+        Date of completion
+        <button type="button" class="date-trigger" name="due" data-date-input value="">
+          <span data-date-label>Pick a date</span>
+        </button>
+      </label>
+
+      <label>
+        Remark
+        <textarea name="remark" rows="3" placeholder="Optional note"></textarea>
+      </label>
+
+      <div class="work-form__actions">
+        <button type="button" class="work-form__cancel" data-close-work-form>Cancel</button>
+        <button type="submit">Add</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="work-dialog" id="category-name-dialog" aria-labelledby="category-name-title">
+    <form class="work-form" id="category-name-form">
+      <h2 id="category-name-title">New category</h2>
+      <label>
+        Category name
+        <input type="text" name="categoryName" required autocomplete="off" />
+      </label>
+      <div class="work-form__actions">
+        <button type="button" class="work-form__cancel" data-close-category-name>Cancel</button>
+        <button type="submit">Add category</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="work-dialog category-dialog" id="category-dialog" aria-labelledby="category-dialog-title">
+    <div class="category-panel">
+      <div class="category-panel__head">
+        <h2 id="category-dialog-title">Category</h2>
+        <button type="button" class="work-form__cancel" data-close-category>Close</button>
+      </div>
+      <div class="work-row work-row--head" aria-hidden="true">
+        <span>Work title</span>
+        <span>How soon</span>
+        <span>Date</span>
+        <span>Remark</span>
+      </div>
+      <div id="category-works" class="category-works"></div>
+    </div>
+  </dialog>
+
+  <footer class="site-footer">
+    <a href="index.html">← Back to desk</a>
+  </footer>
+
+  <div class="date-calendar" id="date-calendar" hidden>
+    <div class="date-calendar__head">
+      <button type="button" class="date-calendar__nav" data-cal-prev aria-label="Previous month">‹</button>
+      <p class="date-calendar__label" id="date-calendar-label"></p>
+      <button type="button" class="date-calendar__nav" data-cal-next aria-label="Next month">›</button>
+    </div>
+    <div class="date-calendar__weekdays" aria-hidden="true">
+      <span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span>
+    </div>
+    <div class="date-calendar__grid" id="date-calendar-grid"></div>
+    <div class="date-calendar__foot">
+      <button type="button" data-cal-today>Today</button>
+      <button type="button" data-cal-clear>Clear</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

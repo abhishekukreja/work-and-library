@@ -1218,10 +1218,231 @@ img {
   margin: 0;
 }
 
-.site-footer--ai {
+.site-footer--ai,
+.site-footer--cfp {
   max-width: none;
   padding: 1.5rem 7vw 3.5rem;
   color: #171717;
+  justify-content: space-between;
+}
+
+.site-footer__ideas-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.1rem;
+  align-items: center;
+  font-size: 0.8125rem;
+}
+
+.site-footer__ideas-nav a {
+  opacity: 0.6;
+  transition: opacity 0.15s;
+}
+
+.site-footer__ideas-nav a:hover,
+.site-footer__ideas-nav a.is-active {
+  opacity: 1;
+}
+
+.site-footer__sep {
+  opacity: 0.45;
+}
+
+/* ——— Concept · Form · Presence page ——— */
+
+.page-cfp {
+  background: #f2eee6;
+  color: #171717;
+}
+
+.site-header--cfp {
+  max-width: none;
+  background: rgba(242, 238, 230, 0.9);
+  border-bottom: 1px solid rgba(23, 23, 23, 0.08);
+}
+
+.cfp-hero {
+  padding: 4.5rem 8vw 3.5rem;
+  max-width: 1350px;
+}
+
+.cfp-hero h1 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.75rem, 8.5vw, 7rem);
+  line-height: 0.9;
+  margin: 0;
+  max-width: 1100px;
+}
+
+.cfp-intro {
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 2.5vw, 2.1rem);
+  line-height: 1.25;
+  max-width: 850px;
+  margin: 2.2rem 0 0;
+  font-weight: 500;
+}
+
+.cfp-main {
+  padding: 0 8vw 5rem;
+  max-width: 1450px;
+}
+
+.cfp-core {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  margin: 1.4rem 0 5.5rem;
+  border-top: 1px solid #aaa;
+  border-bottom: 1px solid #aaa;
+}
+
+.cfp-core div {
+  padding: 2rem 1.5rem 2.2rem 0;
+}
+
+.cfp-core div + div {
+  border-left: 1px solid #aaa;
+  padding-left: 1.5rem;
+}
+
+.cfp-core span {
+  display: block;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  opacity: 0.45;
+  margin-bottom: 1.2rem;
+}
+
+.cfp-core h2 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  margin: 0;
+  line-height: 0.98;
+}
+
+.cfp-section-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+  opacity: 0.48;
+  margin-bottom: 0.9rem;
+}
+
+.cfp-practice-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.cfp-practice {
+  min-height: 26rem;
+  padding: 2.25rem;
+  background: #171717;
+  color: #eee9df;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.cfp-practice:first-child {
+  background: #27231e;
+}
+
+.cfp-practice__num {
+  font-size: 0.68rem;
+  letter-spacing: 0.15em;
+  opacity: 0.45;
+}
+
+.cfp-practice h3 {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 5vw, 4.2rem);
+  font-weight: 500;
+  line-height: 0.92;
+  margin: 0 0 1.1rem;
+}
+
+.cfp-practice p {
+  font-size: 1rem;
+  line-height: 1.55;
+  opacity: 0.7;
+  max-width: 32rem;
+  margin: 0;
+}
+
+.cfp-question {
+  margin-top: 5.5rem;
+  max-width: 61rem;
+}
+
+.cfp-question h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 500;
+  line-height: 1.03;
+  margin: 0 0 1.35rem;
+}
+
+.cfp-question p {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  max-width: 43rem;
+  opacity: 0.65;
+}
+
+.cfp-other {
+  margin-top: 5.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #aaa;
+}
+
+.cfp-other-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1rem;
+  align-items: stretch;
+  margin-top: 0.85rem;
+}
+
+.cfp-note {
+  padding: 2rem;
+  background: #ded8cc;
+}
+
+.cfp-note h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 2rem;
+  margin: 0 0 0.9rem;
+}
+
+.cfp-note p {
+  font-size: 0.95rem;
+  line-height: 1.55;
+  max-width: 40rem;
+  opacity: 0.68;
+}
+
+.cfp-expression {
+  padding: 2rem;
+  border: 1px solid #aaa;
+}
+
+.cfp-expression h3 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin: 0 0 0.9rem;
+}
+
+.cfp-expression p {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  opacity: 0.62;
+  margin: 0;
 }
 
 @media (max-width: 900px) {
@@ -1430,9 +1651,31 @@ img {
 
   .ai-hero,
   .ai-main,
-  .site-footer--ai {
+  .site-footer--ai,
+  .site-footer--cfp {
     padding-left: 5vw;
     padding-right: 5vw;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .cfp-core {
+    grid-template-columns: 1fr;
+  }
+
+  .cfp-core div + div {
+    border-left: 0;
+    border-top: 1px solid #aaa;
+    padding-left: 0;
+  }
+
+  .cfp-practice-grid,
+  .cfp-other-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cfp-practice {
+    min-height: 0;
   }
 
   .ai-question {

@@ -1113,6 +1113,22 @@ img {
   max-width: 850px;
 }
 
+.shared-tagline {
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 1.6vw, 1.35rem);
+  font-style: italic;
+  font-weight: 500;
+  line-height: 1.45;
+  opacity: 0.72;
+  margin: 1.6rem 0 0.1rem;
+  max-width: 42rem;
+  color: inherit;
+}
+
+.page-cfp .shared-tagline {
+  opacity: 0.58;
+}
+
 .ai-hero .intro {
   margin-top: 1.5rem;
   max-width: 42rem;

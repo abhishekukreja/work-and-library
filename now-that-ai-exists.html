@@ -29,25 +29,66 @@
   </header>
 
   <main class="ai-main">
-    <section class="ai-block ai-block--with">
-      <div class="ai-section-title">
-        <h2>With AI</h2>
-        <span>Things newly possible</span>
+    <div class="ai-tabs" role="tablist" aria-label="AI work">
+      <button
+        class="ai-tabs__btn is-active"
+        type="button"
+        role="tab"
+        id="tab-with-ai"
+        aria-selected="true"
+        aria-controls="panel-with-ai"
+        data-ai-tab="with"
+      >
+        With AI
+      </button>
+      <button
+        class="ai-tabs__btn"
+        type="button"
+        role="tab"
+        id="tab-youtube"
+        aria-selected="false"
+        aria-controls="panel-youtube"
+        data-ai-tab="youtube"
+      >
+        AI for YouTube
+      </button>
+    </div>
+
+    <section
+      class="ai-block ai-block--with"
+      id="panel-with-ai"
+      role="tabpanel"
+      aria-labelledby="tab-with-ai"
+      data-ai-panel="with"
+    >
+      <p class="ai-panel-note">Things newly possible beyond the channel</p>
+      <div class="ai-grid">
+        <article class="ai-tile"><div class="ai-tile__num">01</div><h3>Books from Amizone</h3><p>Turn ideas from Amizone into books and fiction, including experiments such as a fictional work around Shah Rukh Khan.</p></article>
+        <article class="ai-tile"><div class="ai-tile__num">02</div><h3>Cinema, Society &amp; Culture</h3><p>Continue scholarly work using AI as a research, comparison, synthesis and thinking partner.</p></article>
+        <article class="ai-tile"><div class="ai-tile__num">03</div><h3>My Critical Theories</h3><p>Develop original theory books emerging from sessions, workshops and encounters at Conflictorium.</p></article>
+        <article class="ai-tile"><div class="ai-tile__num">04</div><h3>Vaufe Bag</h3><p>A bag and accessory brand shaped with AI for design, visual language, product stories and circulating the collection.</p></article>
+        <article class="ai-tile"><div class="ai-tile__num">05</div><h3>Style Me App</h3><p>An app that uses AI to suggest looks, outfits and styling from what someone already owns or wants to wear.</p></article>
+        <article class="ai-tile"><div class="ai-tile__num">06</div><h3>Study Abroad App</h3><p>A guide through universities, applications, visas and life abroad, with AI helping compare options and draft the paperwork of leaving.</p></article>
+        <article class="ai-tile"><div class="ai-tile__num">07</div><h3>Learn English App</h3><p>A speaking, reading and writing companion that uses AI to practise English with a person rather than a worksheet.</p></article>
+        <article class="ai-tile"><div class="ai-tile__num">08</div><h3>Learn to Sing App</h3><p>A practice room in the phone: pitch, phrasing and songs, with AI listening back and helping someone learn to sing.</p></article>
       </div>
+    </section>
+
+    <section
+      class="ai-block ai-block--youtube"
+      id="panel-youtube"
+      role="tabpanel"
+      aria-labelledby="tab-youtube"
+      data-ai-panel="youtube"
+      hidden
+    >
+      <p class="ai-panel-note">YouTube-based work made with AI</p>
       <div class="ai-grid">
         <article class="ai-tile"><div class="ai-tile__num">01</div><h3>Our World</h3><p>An AI-character YouTube universe with Arjun, the Infotainer, Safia, the Historian, and other recurring characters — including The Great Debate, a current-affairs and ideas format with AI characters representing different positions.</p></article>
-        <article class="ai-tile"><div class="ai-tile__num">02</div><h3>Books from Amizone</h3><p>Turn ideas from Amizone into books and fiction, including experiments such as a fictional work around Shah Rukh Khan.</p></article>
-        <article class="ai-tile"><div class="ai-tile__num">03</div><h3>Cinema, Society &amp; Culture</h3><p>Continue scholarly work using AI as a research, comparison, synthesis and thinking partner.</p></article>
-        <article class="ai-tile"><div class="ai-tile__num">04</div><h3>My Critical Theories</h3><p>Develop original theory books emerging from sessions, workshops and encounters at Conflictorium.</p></article>
-        <article class="ai-tile"><div class="ai-tile__num">05</div><h3>AI Versions of Songs</h3><p>Reimagine existing songs through AI and explore a new YouTube format around musical transformation.</p></article>
-        <article class="ai-tile"><div class="ai-tile__num">06</div><h3>Animated Short Stories</h3><p>Produce animated stories without requiring the conventional scale of an animation production team.</p></article>
-        <article class="ai-tile"><div class="ai-tile__num">07</div><h3>AI Cinema</h3><p>Make films through AI characters and motion-capture / performance-driven workflows.</p></article>
-        <article class="ai-tile"><div class="ai-tile__num">08</div><h3>AI Science Classroom</h3><p>A YouTube channel explaining science from Class 6 to Class 12 through AI-generated lessons and visualisations.</p></article>
-        <article class="ai-tile"><div class="ai-tile__num">09</div><h3>Vaufe Bag</h3><p>A bag and accessory brand shaped with AI for design, visual language, product stories and circulating the collection.</p></article>
-        <article class="ai-tile"><div class="ai-tile__num">10</div><h3>Style Me App</h3><p>An app that uses AI to suggest looks, outfits and styling from what someone already owns or wants to wear.</p></article>
-        <article class="ai-tile"><div class="ai-tile__num">11</div><h3>Study Abroad App</h3><p>A guide through universities, applications, visas and life abroad, with AI helping compare options and draft the paperwork of leaving.</p></article>
-        <article class="ai-tile"><div class="ai-tile__num">12</div><h3>Learn English App</h3><p>A speaking, reading and writing companion that uses AI to practise English with a person rather than a worksheet.</p></article>
-        <article class="ai-tile"><div class="ai-tile__num">13</div><h3>Learn to Sing App</h3><p>A practice room in the phone: pitch, phrasing and songs, with AI listening back and helping someone learn to sing.</p></article>
+        <article class="ai-tile"><div class="ai-tile__num">02</div><h3>AI Versions of Songs</h3><p>Reimagine existing songs through AI and explore a new YouTube format around musical transformation.</p></article>
+        <article class="ai-tile"><div class="ai-tile__num">03</div><h3>Animated Short Stories</h3><p>Produce animated stories without requiring the conventional scale of an animation production team.</p></article>
+        <article class="ai-tile"><div class="ai-tile__num">04</div><h3>AI Cinema</h3><p>Make films through AI characters and motion-capture / performance-driven workflows.</p></article>
+        <article class="ai-tile"><div class="ai-tile__num">05</div><h3>AI Science Classroom</h3><p>A YouTube channel explaining science from Class 6 to Class 12 through AI-generated lessons and visualisations.</p></article>
       </div>
     </section>
 
@@ -57,9 +98,9 @@
         <span>Things I still want to make myself</span>
       </div>
       <div class="ai-grid">
-        <article class="ai-tile"><div class="ai-tile__num">14</div><h3>Documentary Art Films</h3><p>Films grounded in real people, real spaces, real encounters and the documentary act itself.</p></article>
-        <article class="ai-tile"><div class="ai-tile__num">15</div><h3>Performance Art</h3><p>Works emerging from the body, presence, space, audience and live encounter.</p></article>
-        <article class="ai-tile"><div class="ai-tile__num">16</div><h3>Urdu Poetry</h3><p>Writing and performing poetry where language, memory, voice and lived experience remain central.</p></article>
+        <article class="ai-tile"><div class="ai-tile__num">01</div><h3>Documentary Art Films</h3><p>Films grounded in real people, real spaces, real encounters and the documentary act itself.</p></article>
+        <article class="ai-tile"><div class="ai-tile__num">02</div><h3>Performance Art</h3><p>Works emerging from the body, presence, space, audience and live encounter.</p></article>
+        <article class="ai-tile"><div class="ai-tile__num">03</div><h3>Urdu Poetry</h3><p>Writing and performing poetry where language, memory, voice and lived experience remain central.</p></article>
       </div>
     </section>
 
@@ -75,5 +116,6 @@
       <a href="concept-form-presence.html">Concept · Form · Presence</a>
     </nav>
   </footer>
+  <script src="script.js"></script>
 </body>
 </html>

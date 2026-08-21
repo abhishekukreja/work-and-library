@@ -1255,3 +1255,24 @@
   });
   pullDesk();
 })();
+
+(() => {
+  const tabs = [...document.querySelectorAll("[data-ai-tab]")];
+  const panels = [...document.querySelectorAll("[data-ai-panel]")];
+  if (!tabs.length || !panels.length) return;
+
+  const activate = (key) => {
+    tabs.forEach((tab) => {
+      const on = tab.dataset.aiTab === key;
+      tab.classList.toggle("is-active", on);
+      tab.setAttribute("aria-selected", on ? "true" : "false");
+    });
+    panels.forEach((panel) => {
+      panel.hidden = panel.dataset.aiPanel !== key;
+    });
+  };
+
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => activate(tab.dataset.aiTab));
+  });
+})();
